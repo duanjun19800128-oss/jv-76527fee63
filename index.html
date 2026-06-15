@@ -155,7 +155,7 @@
     </g>
   </svg></div>
   <h1>金陵序 · 工地验收</h1>
-  <div class="sub">南京河西招商 · 金陵序 · 7栋369户　|　<b>v1.0（一户一验 · 安装过程中「5层一验收」· 离线可拍照圈注 · 语音录入 · 消项率统计）</b></div>
+  <div class="sub">南京河西招商 · 金陵序 · 7栋369户　|　<b>v1.1（一户一验 · 安装过程中「5层一验收」· 离线可拍照圈注 · 语音录入 · 消项率统计）</b></div>
   <div class="statusrow">
     <span id="curHouse" class="cnt">当前：未填房号</span>
     <span id="curLv" class="badge lvw">待查</span>
@@ -441,6 +441,7 @@ function renderItemPhotos(code){
       <span class="pe" onclick="event.stopPropagation();reAnno('${p.id}')">✏️圈</span>
     </div>`).join("");
   arr.forEach(async p=>{ const m=await mGet(p.id); if(m&&m.blob){ const el=document.getElementById('thumb_'+p.id); if(el) el.src=URL.createObjectURL(m.blob);} });
+  const _b=document.querySelector(`#def_${code} .dphotobtn`); if(_b) _b.innerHTML = arr.length?`📷 已拍 ${arr.length} 张（点下方小图放大看）`:`📷 拍照`;
 }
 // 拍照前置校验：楼栋/房号为空先提示（水印要用）
 function addPhotoFor(code){
@@ -505,6 +506,8 @@ function pushItemPhoto(code, p){
   if(!state.cur.jphoto)state.cur.jphoto={};
   if(!state.cur.jphoto[code])state.cur.jphoto[code]=[];
   state.cur.jphoto[code].push(p); persist(); renderItemPhotos(code); refreshStatus();
+  const _el=document.getElementById('dphotos_'+code); if(_el){ try{_el.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){} }
+  toast("照片已存 ✓ 就在这项下方，点小图可放大回看");
 }
 function delItemPhoto(code,i){ const arr=state.cur.jphoto[code]; if(!arr)return; const p=arr[i]; if(p)mDel(p.id); arr.splice(i,1); persist(); renderItemPhotos(code); }
 /* ===== 圈注编辑器:拍照后用手指圈出问题点(红圈),圈完和水印一起烧进照片【复用金茂府】 ===== */
