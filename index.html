@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>金陵序 · 工地验收</title>
+<meta name="apple-mobile-web-app-title" content="金陵序验收">
+<style>
+  /* ===== 金盈泰品牌色（深墨黑/胡桃棕/铜金/米白） ===== */
+  :root{ --ink2:#171412; --navy:#6B4A2D; --orange:#B98142; --blue:#8A5E38; --fill:#F0E3D2;
+    --gold:#D7A35D; --cream:#F5F1EA;
+    --red:#C0392B; --amber:#BF8F00; --green:#5A7A3A; --gray:#8A8175; --line:#E4DACB; --bg:#F5F1EA; }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; background:var(--bg);
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",Arial,sans-serif; color:#2A2420;}
+  body{padding-bottom:130px;}
+  /* 顶栏：深墨黑 + logo */
+  .topbar{position:sticky; top:0; z-index:50; background:var(--ink2); color:var(--cream);
+    padding:10px 12px 11px; box-shadow:0 2px 8px rgba(0,0,0,.25); border-bottom:3px solid var(--orange);}
+  .topbar .logo{margin:2px 0 7px;}
+  .topbar .logo svg{width:min(232px,66%); height:auto; display:block;}
+  .topbar h1{margin:0; font-size:16px; font-weight:800; letter-spacing:.5px;}
+  .topbar .sub{font-size:11px; opacity:.85; margin-top:3px; line-height:1.5;}
+  .statusrow{display:flex; gap:8px; align-items:center; margin-top:9px; flex-wrap:wrap;}
+  .badge{padding:4px 10px; border-radius:14px; font-size:13px; font-weight:700; background:var(--cream); color:var(--ink2);}
+  .badge.lv0{background:#E6EEDC; color:var(--green);}
+  .badge.lv1{background:#DCE7F2; color:#2E5C9A;}
+  .badge.lv2{background:#FCE8D4; color:var(--amber);}
+  .badge.lv3{background:#F6D6D2; color:var(--red);}
+  .badge.lvw{background:#EBE2D4; color:#9a8d78;}
+  .cnt{font-size:12px; opacity:.92;}
+  .card{background:#fff; margin:10px; border-radius:12px; padding:12px 12px 6px; box-shadow:0 1px 4px rgba(107,74,45,.08);}
+  .card h2{margin:0 0 10px; font-size:14px; color:var(--navy); font-weight:800; border-left:4px solid var(--orange); padding-left:8px;}
+  .grp-label{font-size:12px; color:var(--orange); font-weight:800; margin:8px 0 2px;}
+  .grp-row{display:flex; align-items:center; justify-content:space-between; gap:8px; margin:14px 0 4px; padding-bottom:6px; border-bottom:2px solid var(--fill);}
+  .grp-row .grp-label{margin:0; font-size:13px;}
+  .gsup{padding:7px 8px; font-size:13px; border:1px solid var(--orange); border-radius:7px; background:#FBF6EE; color:var(--navy); font-weight:700; min-width:128px; max-width:150px;}
+  .field{margin-bottom:10px;}
+  .field label{display:block; font-size:12px; color:#6b5e4d; margin-bottom:4px;}
+  .field input{width:100%; padding:10px; font-size:16px; border:1px solid var(--line); border-radius:8px; background:#fff;}
+  .row2{display:flex; gap:8px;} .row2>.field{flex:1;}
+  .row3{display:flex; gap:8px;} .row3>.field{flex:1;}
+  /* 检查项 */
+  .defect{padding:9px 0; border-bottom:1px solid #F2ECE0;}
+  .defect:last-child{border-bottom:none;}
+  .dhead{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .dname{font-size:13.5px; font-weight:600; line-height:1.35;}
+  .dcode{color:var(--orange); font-weight:800; margin-right:4px;}
+  .dstd{font-size:11px; color:#9a8d78; font-weight:600; margin-left:4px;}
+  .help-btn{flex:none; width:22px; height:22px; border-radius:50%; border:1px solid var(--line); background:#fff; color:var(--orange); font-size:13px; font-weight:700; line-height:20px; text-align:center;}
+  .help{display:none; font-size:12px; color:#6b5e4d; background:var(--fill); border-radius:8px; padding:8px; margin-top:6px; line-height:1.5;}
+  .help.show{display:block;}
+  .drow{display:flex; align-items:center; gap:6px; margin-top:8px;}
+  .drow .dsup{flex:none;}
+  .dsup{padding:7px 7px; font-size:12px; border:1px solid var(--line); border-radius:7px; background:#FBF8F2; color:var(--navy); font-weight:600; max-width:118px;}
+  .opts{display:flex; gap:5px; margin-top:8px;}
+  .opt{flex:1; text-align:center; padding:9px 2px; font-size:12px; border-radius:8px; border:1px solid var(--line); background:#fff; color:#6b5e4d; font-weight:600;}
+  .opt[data-v="合格"].on{background:#E6EEDC; color:var(--green); border-color:var(--green);}
+  .opt[data-v="轻微"].on{background:#DCE7F2; color:#2E5C9A; border-color:#2E5C9A;}
+  .opt[data-v="严重"].on{background:#FCE8D4; color:var(--amber); border-color:var(--amber);}
+  .opt[data-v="不可交付"].on{background:#F6D6D2; color:var(--red); border-color:var(--red); font-weight:700;}
+  .opt[data-v="不涉及"].on{background:#EDE7DC; color:#9a8d78; border-color:#cabfa9;}
+  /* 每项的备注 + 语音 + 照片 */
+  .dmore{margin-top:8px;}
+  .dnoterow{display:flex; gap:6px; align-items:center;}
+  .dnote{flex:1; padding:8px 9px; font-size:14px; border:1px solid var(--line); border-radius:8px; background:#fff;}
+  .micbtn{flex:none; width:38px; height:38px; border:1px solid var(--orange); border-radius:8px; background:#FBF6EE; color:var(--orange); font-size:17px;}
+  .micbtn.rec{background:var(--red); color:#fff; border-color:var(--red); animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .dphotobtn{flex:none; padding:8px 10px; border:1px solid var(--orange); border-radius:8px; background:#FBF6EE; color:var(--orange); font-size:13px; font-weight:700; white-space:nowrap;}
+  .dphotos{display:flex; flex-wrap:wrap; gap:6px; margin-top:7px;}
+  .dpthumb{position:relative; width:52px; height:52px; border-radius:7px; overflow:hidden; border:1px solid var(--line); background:#222;}
+  .dpthumb img{width:100%; height:100%; object-fit:cover;}
+  .dpthumb .px{position:absolute; top:-1px; right:-1px; width:18px; height:18px; background:rgba(192,57,43,.92); color:#fff; font-size:12px; line-height:18px; text-align:center; border-bottom-left-radius:6px;}
+  .dpthumb .pe{position:absolute; bottom:-1px; left:-1px; right:-1px; background:rgba(0,0,0,.55); color:#fff; font-size:10px; text-align:center; line-height:15px;}
+  /* 自定义项 */
+  .addbtn{display:block; width:100%; margin:12px 0 4px; padding:11px; border:1.5px dashed var(--orange); background:#FBF6EE; color:var(--orange); font-size:13.5px; font-weight:700; border-radius:9px;}
+  .custom{padding:9px; border:1px solid var(--line); border-radius:9px; margin-top:8px; background:#FBF8F2;}
+  .custom .crow{display:flex; gap:6px; align-items:center;}
+  .custom input{flex:1; padding:8px; font-size:14px; border:1px solid var(--line); border-radius:7px;}
+  .custom .delx{flex:none; width:30px; height:34px; border:none; background:none; color:var(--red); font-size:18px;}
+  /* 照片缩略全屏 */
+  .pthumb{cursor:zoom-in;}
+  .lbox{display:none; position:fixed; top:0;left:0;right:0;bottom:0; z-index:300; background:rgba(0,0,0,.94); align-items:center; justify-content:center; overflow:hidden; touch-action:none;}
+  .lbox img{max-width:100%; max-height:100%; object-fit:contain; transform-origin:center center; will-change:transform; -webkit-user-drag:none; user-select:none;}
+  .lbx{position:fixed; top:calc(env(safe-area-inset-top) + 8px); right:12px; z-index:301; width:42px; height:42px; border:none; border-radius:50%; background:rgba(255,255,255,.22); color:#fff; font-size:20px;}
+  .lbhint{position:fixed; left:0; right:0; bottom:calc(env(safe-area-inset-bottom) + 14px); text-align:center; color:rgba(255,255,255,.72); font-size:12px; z-index:301; pointer-events:none;}
+  /* 圈注编辑器 */
+  .annoBox{display:none; position:fixed; top:0;left:0;right:0;bottom:0; z-index:400; background:#000; flex-direction:column; align-items:center; justify-content:center;}
+  .annoHint{position:fixed; top:calc(env(safe-area-inset-top) + 8px); left:0; right:0; text-align:center; color:#fff; font-size:13px; z-index:401; pointer-events:none; text-shadow:0 1px 3px #000;}
+  #annoCv{max-width:100%; max-height:calc(100vh - 86px); touch-action:none; display:block;}
+  .annoBar{position:fixed; bottom:0; left:0; right:0; display:flex; gap:8px; padding:10px 12px calc(10px + env(safe-area-inset-bottom)); background:rgba(0,0,0,.88); z-index:401;}
+  .annoBar button{flex:1; padding:13px 6px; font-size:15px; font-weight:700; border:none; border-radius:9px; background:#3a3a3a; color:#fff;}
+  .annoBar button.done{background:#1E7A46; flex:1.5;}
+  /* 底部栏 */
+  .footer{position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--line); padding:10px 12px calc(10px + env(safe-area-inset-bottom)); display:flex; gap:8px; z-index:60; box-shadow:0 -2px 8px rgba(107,74,45,.1);}
+  .btn{flex:1; padding:13px; font-size:15px; font-weight:700; border:none; border-radius:10px;}
+  .btn-save{background:var(--ink2); color:var(--cream);}
+  .btn-new{background:#fff; color:var(--navy); border:1.5px solid var(--navy); flex:none; padding:13px 11px; font-size:13px;}
+  .btn-back{background:#fff; color:var(--navy); border:1.5px solid var(--navy); flex:none; padding:13px 11px; font-size:13px;}
+  .searchbox{width:100%; padding:9px 11px; font-size:14px; border:1px solid var(--line); border-radius:8px; margin:2px 0 6px;}
+  .rec{display:flex; align-items:center; gap:8px; padding:9px 6px; border-bottom:1px solid #F2ECE0; font-size:13px;}
+  .rec .h{flex:1; font-weight:600;}
+  .rec .mini{font-size:11px; color:#9a8d78;}
+  .rec button{border:none; background:none; font-size:13px; padding:6px 8px;}
+  .rec .edit{color:#2E5C9A;} .rec .del{color:var(--red);}
+  .toolbtns{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+  .toolbtns button{flex:1; min-width:120px; padding:11px; font-size:13.5px; font-weight:700; border-radius:9px; border:1px solid var(--line); background:#fff;}
+  .toolbtns .exp{background:#1E7A46; color:#fff; border-color:#1E7A46;}
+  .toolbtns .clr{color:var(--red); border-color:#E6B9B9;}
+  /* 消项率统计面板 */
+  .statpanel{background:#FBF6EE; border:1px solid var(--fill); border-radius:10px; padding:11px 12px; margin-top:4px;}
+  .statpanel .sttitle{font-size:13px; font-weight:800; color:var(--navy); margin-bottom:9px; display:flex; align-items:center; gap:6px;}
+  .statpanel .strate{font-size:12px; font-weight:800; color:#fff; background:var(--green); padding:3px 10px; border-radius:12px; margin-left:auto;}
+  .statgrid{display:flex; flex-wrap:wrap; gap:6px;}
+  .statgrid span{background:#fff; border:1px solid var(--fill); border-radius:8px; padding:5px 10px; font-size:12px; color:var(--navy); font-weight:600;}
+  .statgrid span b{font-weight:800;}
+  .supdist{margin-top:9px;}
+  .supdist .sdh{font-size:11.5px; color:#9a8d78; font-weight:700; margin-bottom:5px;}
+  .supbar{display:flex; align-items:center; gap:7px; margin-bottom:5px; font-size:12px;}
+  .supbar .snm{flex:none; width:88px; color:var(--navy); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .supbar .strack{flex:1; height:14px; background:#EDE7DC; border-radius:7px; overflow:hidden;}
+  .supbar .sfill{height:100%; background:linear-gradient(90deg,var(--orange),var(--gold)); border-radius:7px;}
+  .supbar .sval{flex:none; width:34px; text-align:right; color:#6b5e4d; font-weight:700;}
+  .tip{font-size:11.5px; color:#9a8d78; margin:4px 2px 0; line-height:1.55;}
+  .toast{position:fixed; left:50%; top:46%; transform:translate(-50%,-50%); background:rgba(23,20,18,.9); color:#fff; padding:12px 20px; border-radius:10px; font-size:14px; z-index:99; display:none; max-width:80%; text-align:center;}
+  .modal-mask{display:none; position:fixed; inset:0; background:rgba(23,20,18,.5); z-index:200; align-items:center; justify-content:center;}
+  .modal-mask.show{display:flex;}
+  .modal-box{background:#fff; border-radius:14px; padding:18px 16px; width:86%; max-width:340px;}
+  .modal-title{font-size:15px; font-weight:700; color:var(--navy); margin-bottom:14px; line-height:1.5;}
+  .modal-btn{display:block; width:100%; padding:14px; margin-bottom:10px; border-radius:10px; font-size:15px; font-weight:700; border:none;}
+  .modal-btn.save{background:var(--ink2); color:var(--cream);}
+  .modal-btn.discard{background:#fff; color:var(--red); border:1.5px solid #E6B9B9;}
+  .modal-btn.cancel{background:#F0EBE1; color:#6b5e4d; margin-bottom:0;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><svg viewBox="0 44 1400 312" xmlns="http://www.w3.org/2000/svg" aria-label="金盈泰高定木作">
+    <g transform="translate(92 86)">
+      <path d="M0 0 V160 H106 V122 H52" stroke="#D7A35D" stroke-width="22" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
+      <path d="M176 0 L246 84 L316 0 M246 84 V160" stroke="#F5F1EA" stroke-width="22" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
+      <path d="M400 0 H580 M490 0 V160" stroke="#D7A35D" stroke-width="22" fill="none" stroke-linecap="square" stroke-linejoin="miter"/>
+      <line x1="0" y1="198" x2="580" y2="198" stroke="#B98142" stroke-width="8"/>
+    </g>
+    <g transform="translate(750 116)" font-family="Arial,Helvetica,sans-serif" font-weight="700">
+      <text x="0" y="68" font-size="66" letter-spacing="8" fill="#F5F1EA">JINYINGTAI</text>
+      <text x="3" y="132" font-size="40" fill="#D7A35D" font-family="'PingFang SC','Microsoft YaHei',sans-serif">金盈泰高定木作</text>
+      <text x="4" y="184" font-size="18" letter-spacing="4" fill="#BDB4AA">CUSTOM WOODWORK SYSTEMS</text>
+    </g>
+  </svg></div>
+  <h1>金陵序 · 工地验收</h1>
+  <div class="sub">南京河西招商 · 金陵序 · 7栋369户　|　<b>v1.0（一户一验 · 安装过程中「5层一验收」· 离线可拍照圈注 · 语音录入 · 消项率统计）</b></div>
+  <div class="statusrow">
+    <span id="curHouse" class="cnt">当前：未填房号</span>
+    <span id="curLv" class="badge lvw">待查</span>
+    <span id="curCnt" class="cnt">缺陷 0 项</span>
+    <span onclick="forceUpdate()" style="margin-left:auto; background:rgba(255,255,255,.16); padding:5px 9px; border-radius:12px; font-size:11px; white-space:nowrap;">🔄 刷新最新版</span>
+  </div>
+</div>
+
+<div class="card">
+  <h2>① 户信息</h2>
+  <div class="row3">
+    <div class="field"><label>楼栋 *</label><input id="f_build" placeholder="如 3栋"></div>
+    <div class="field"><label>单元 *</label><input id="f_unit2" placeholder="如 1单元"></div>
+    <div class="field"><label>房号 *</label><input id="f_room" placeholder="如 1602"></div>
+  </div>
+  <div class="row2">
+    <div class="field"><label>户型</label><input id="f_type" placeholder="如 149 / 176"></div>
+    <div class="field"><label>检查人</label><input id="f_who" placeholder="如 张传超"></div>
+  </div>
+  <div class="field"><label>检查日期</label><input id="f_date" type="date"></div>
+  <div class="tip" style="margin:0">房号主键＝<b>楼栋-单元-房号</b>（防串户、照片水印都用它）。各品类的责任方在每项右侧可单独选，已预置默认值。</div>
+</div>
+
+<div class="card" id="defectCard">
+  <h2>② 逐项验收（按品类分组）</h2>
+  <div class="tip" style="margin:0 0 6px;">每项：先点判定（合格/①轻微/②严重/③不可交付/不涉及）→ 需要时改责任方、🎤说一句备注、📷拍照圈出问题位置。</div>
+  <div id="defects"></div>
+  <div id="customBox"></div>
+  <button class="addbtn" onclick="addCustom()">＋ 添加自定义项（查到清单外的问题就点一下，可连续加多项）</button>
+</div>
+
+<div class="card">
+  <h2>③ 本户总备注</h2>
+  <input id="picker" type="file" accept="image/*,video/*" multiple style="display:none" onchange="onPick(event)">
+  <div class="dnoterow">
+    <input id="f_note" class="dnote" placeholder="针对整户的总备注 / 换件清单（选填）">
+    <button class="micbtn" id="mic_house" onclick="toggleMic('__house__',this)">🎤</button>
+  </div>
+  <div class="tip">每个检查项可单独拍照，照片会自动打上「金陵序 · 楼栋-单元-房号 · 时间 · 检查人」水印——<b>拍前先填好楼栋/单元/房号/检查人，水印才准</b>。拍完可用手指圈出问题位置（红圈）。照片自动压缩。🎤＝按一下开始说话，浏览器把话转成文字填进备注（Chrome / iOS Safari 支持；不支持的会提示）。</div>
+</div>
+
+<div class="card">
+  <h2>④ 已验收户清单 · 消项率统计</h2>
+  <div class="tip" style="margin:0 0 4px;">填完一户点【保存本户】才进清单；想改某户，下框输房号定位、或点那行「✏️改」，改完再点【保存本户】更新。</div>
+  <div class="statpanel" id="statPanel"></div>
+  <input id="searchRec" class="searchbox" placeholder="🔍 输房号 / 楼栋 / 单元快速定位（如 1602 / 3栋）" oninput="renderRecs()" style="margin-top:8px;">
+  <div id="recList" style="margin-top:2px;"></div>
+  <div class="toolbtns">
+    <button class="exp" id="btnNew" onclick="exportNew()">导出新增（表格＋照片）</button>
+    <button onclick="exportAll()">导出全部（备份）</button>
+    <button class="clr" onclick="clearAll()">清空全部</button>
+    <button id="btnClrExp" onclick="clearExported()" style="background:#E8A33D;color:#fff;border:none;">🧹 清理已导出照片·省空间</button>
+  </div>
+  <div class="tip"><b>「导出新增」=只导上次导出之后新填/改过的户</b>（文件小，建议每栋楼/每20户导一次发回，前面导过的不会重复）；「导出全部」=把所有户重导一遍（备份或最后用）。数据/照片存本手机不丢，换手机/清缓存前先导。拍照版用 Safari/Chrome 导出更稳。</div>
+</div>
+
+<div class="footer">
+  <button class="btn btn-back" onclick="prevHouse()">↩ 上一户</button>
+  <button class="btn btn-save" onclick="saveHouse()">✓ 保存本户</button>
+  <button class="btn btn-new" onclick="newHouse()">下一户</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-mask" id="nextModal">
+  <div class="modal-box">
+    <div class="modal-title" id="nextModalTitle">当前这户还没保存，怎么处理？</div>
+    <button class="modal-btn save" onclick="nextChoice('save')">💾 保存本户，并进入下一户</button>
+    <button class="modal-btn discard" onclick="nextChoice('discard')">🗑 丢弃本户，进入下一户</button>
+    <button class="modal-btn cancel" onclick="nextChoice('cancel')">取消（继续填本户）</button>
+  </div>
+</div>
+
+<div class="modal-mask" id="dupModal">
+  <div class="modal-box">
+    <div class="modal-title" id="dupTitle">这户已经录过了，是不是房号填错了？</div>
+    <button class="modal-btn save" onclick="dupChoice('rename')">🔢 房号填错了，返回改房号</button>
+    <button class="modal-btn discard" onclick="dupChoice('edit')">✏️ 这户我已录过，去编辑原来那条</button>
+    <button class="modal-btn cancel" onclick="dupChoice('force')">➕ 确实是不同两户，强制新增一条</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// 业务层：金陵序验收检查项清单（替换金茂府缺陷码矩阵）
+//   数据来源：张传超 2026-06-13 需求表（勾选标准项 + 4 个非标特殊项 + 责任方清单）
+// ============================================================
+// 责任方（11 项，每检查项预置默认值，可改）
+const SUPPLIERS=["金牌","南京盛康","南京楷森","南京尚品","南京华阳","岩赞","南京全晟","汪波(橱柜安装)","王梅(台面安装)","设计","其他"];
+
+// 检查项库：按组 → 默认责任方 → 每项[编号,名称,标准/说明,默认责任方]
+const DCATS=[
+ {key:"A", grp:"A 柜体 · 通用", items:[
+  ["A1","垂直度超差","标准≤2mm；吊垂线或靠尺测","金牌"],
+  ["A2","平行度 / 方正度","量上下口长度差、对角线差","金牌"],
+  ["A3","柜体整体变形","柜体扭曲、鼓凸、不在一个面","金牌"],
+  ["A4","柜门 / 抽屉开合顺畅","开合无卡顿、回弹、异响","金牌"],
+  ["A5","门缝 / 对缝均匀","标准 2-3mm，上下左右一致","金牌"],
+  ["A6","划痕 / 磕碰 / 压痕","可见面无划痕、磕碰、压痕","金牌"],
+  ["A7","色差","同一空间柜体/门板无明显色差","金牌"],
+  ["A8","五金牢固（铰链/滑轨/拉手）","逐个晃，无松动、缺件","金牌"],
+  ["A9","层板 / 挂衣杆挠度","标准≤3mm；满载或手压测","金牌"],
+  ["A10","封边 / 背板完整","封边无翘起、背板无破损/缺装","金牌"],
+ ]},
+ {key:"B", grp:"B 不锈钢柜体 · 专项", items:[
+  ["B1","焊点外露 / 毛刺 / 虚焊","可见面无外露焊点，手摸无毛刺、虚焊","南京全晟"],
+  ["B2","阳角 / 冷角刮手","边角倒钝，手摸不刮手","南京全晟"],
+  ["B3","圆弧与直面接合 / 错台","圆弧与直面切合，无错台","南京全晟"],
+  ["B4","违规打胶遮缺陷","应无缝拼接处违规打胶=不合格","南京全晟"],
+ ]},
+ {key:"C", grp:"C 台面 · 岩板", items:[
+  ["C1","拼接缝高低差","标准≤0.2mm；横放直尺压缝看","岩赞"],
+  ["C2","台面平整度","靠尺测平整，无明显高低","岩赞"],
+  ["C3","崩边 / 崩瓷","边角、表面无崩边崩瓷缺口","岩赞"],
+  ["C4","收口 / 打胶平顺","与墙/柜收口平顺，打胶均匀","岩赞"],
+  ["C5","开孔（水盆/灶）尺寸位置","开孔尺寸、位置对，无偏移崩口","岩赞"],
+  ["C6","色差 / 纹理对接","拼接处纹理对接自然、无色差","岩赞"],
+ ]},
+ {key:"D", grp:"D 门板 / 木饰面", items:[
+  ["D1","变形 / 翘曲","门板/饰面平整，无翘曲鼓凸","金牌"],
+  ["D2","色差 / 光泽不一","同空间色差、光泽一致","金牌"],
+  ["D3","封边 / 收口","封边牢固平顺、收口到位","金牌"],
+  ["D4","门缝均匀","门扇之间、与柜体缝隙均匀","金牌"],
+  ["D5","表面划痕 / 脏污","表面无划痕、胶印、脏污","金牌"],
+ ]},
+ {key:"E", grp:"E 玻璃 / 镜", items:[
+  ["E1","玻璃层板完整 / 无划痕 / 无崩边","玻璃/镜面无划痕、无崩边、安装牢固","南京华阳"],
+ ]},
+ {key:"F", grp:"F 通用 · 交付", items:[
+  ["F1","尺寸符合下单图","实测尺寸与下单图一致","汪波(橱柜安装)"],
+  ["F2","安装位置准确","位置、标高、朝向准确","汪波(橱柜安装)"],
+  ["F3","成品保护到位","已装成品有保护、未污损","汪波(橱柜安装)"],
+  ["F4","清洁度","柜内/台面/地面清洁，无残料","汪波(橱柜安装)"],
+  ["F5","标识 / 标签齐全","型号/方向/编号标识齐全","汪波(橱柜安装)"],
+  ["F6","缝隙打胶收口","各收口缝隙打胶均匀平顺","汪波(橱柜安装)"],
+  ["F7","与水电点位对接","与水、电、给排水点位对接正确","汪波(橱柜安装)"],
+ ]},
+ {key:"G", grp:"G 卫浴 · 特殊项（重点）", items:[
+  ["G1","镜门防雾镜灯","指示灯正常显示，灯条感应开关能控制","南京尚品"],
+  ["G2","卫浴人体感应灯","人来灯亮、人走灯灭","汪波(橱柜安装)"],
+  ["G3","回旋门五金","门板上口缝≤3mm，下口与侧板底口平行","金牌"],
+  ["G4","卫浴镜柜插座接线","用插座测试仪检测是否缺线","汪波(橱柜安装)"],
+ ]},
+];
+const FIXED=DCATS.flatMap(c=>c.items.map(i=>i[0]));   // 固定项编号顺序
+const ITEMNAME={}; const ITEMDEFSUP={};
+DCATS.forEach(c=>c.items.forEach(it=>{ ITEMNAME[it[0]]=it[1]; ITEMDEFSUP[it[0]]=it[3]||""; }));
+const OPTS=["合格","轻微","严重","不可交付","不涉及"];
+const LV={ "合格":0,"轻微":1,"严重":2,"不可交付":3 };
+const KEY="jlx_inspect_v1";
+
+let state=load();
+function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)); return s&&s.records?s:blank(); }catch(e){ return blank(); } }
+function blank(){ return { records:[], cur:emptyCur(), editIdx:null, exportBatch:0 }; }
+// 每户：j={编号:判定} jsup={编号:责任方(覆盖默认)} jnote={编号:备注} jphoto={编号:[{id,note}]}
+function emptyCur(){ return { hid:uid(), build:"",unit:"",room:"",type:"",who:"",date:"",note:"",
+   j:{}, jsup:{}, jnote:{}, jphoto:{}, custom:[] }; }
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){ toast("存储空间紧张，建议先导出"); } }
+function uid(){ try{ return crypto.randomUUID(); }catch(e){ return 'id'+Date.now()+Math.random().toString(16).slice(2); } }
+
+// ============================================================
+// 【金茂府工程层·原样复用】IndexedDB 存照片/视频
+// ============================================================
+let _db;
+function idb(){ return new Promise((res,rej)=>{ if(_db)return res(_db);
+  const r=indexedDB.open('jlx_media',1);
+  r.onupgradeneeded=()=>{ if(!r.result.objectStoreNames.contains('media')) r.result.createObjectStore('media',{keyPath:'id'}); };
+  r.onsuccess=()=>{_db=r.result;res(_db);}; r.onerror=()=>rej(r.error); }); }
+async function mPut(o){ const db=await idb(); return new Promise((res,rej)=>{ const t=db.transaction('media','readwrite'); t.objectStore('media').put(o); t.oncomplete=()=>res(); t.onerror=()=>rej(t.error); }); }
+async function mGet(id){ const db=await idb(); return new Promise((res,rej)=>{ const t=db.transaction('media','readonly'); const q=t.objectStore('media').get(id); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); }); }
+async function mDel(id){ const db=await idb(); return new Promise((res)=>{ const t=db.transaction('media','readwrite'); t.objectStore('media').delete(id); t.oncomplete=()=>res(); }); }
+async function mClear(){ const db=await idb(); return new Promise((res)=>{ const t=db.transaction('media','readwrite'); t.objectStore('media').clear(); t.oncomplete=()=>res(); }); }
+
+// ============================================================
+// 渲染检查项清单（每项：判定 + 责任方 + 备注+🎤 + 照片）
+// ============================================================
+function renderDefects(){
+  const box=document.getElementById("defects"); let html="";
+  DCATS.forEach(cat=>{
+    html+=`<div class="grp-row"><span class="grp-label">${cat.grp}</span></div>`;
+    cat.items.forEach(d=>{
+      const [code,name,help,defSup]=d;
+      const cur=state.cur.j[code]||"";
+      const sup=(state.cur.jsup&&state.cur.jsup[code]!=null)?state.cur.jsup[code]:defSup;
+      const note=(state.cur.jnote&&state.cur.jnote[code])||"";
+      const opts=OPTS.map(o=>`<div class="opt ${cur===o?'on':''}" data-v="${o}" onclick="pick('${code}','${o}')">${o}</div>`).join("");
+      const supOpts=SUPPLIERS.map(s=>`<option value="${s}"${sup===s?' selected':''}>${s}</option>`).join("");
+      html+=`<div class="defect" id="def_${code}">
+        <div class="dhead"><div class="dname"><span class="dcode">${code}</span>${name}${help&&/[≤<]|mm/.test(help)?`<span class="dstd">${stdShort(help)}</span>`:''}</div>
+          <button class="help-btn" onclick="toggleHelp('${code}')">?</button></div>
+        <div class="help" id="help_${code}">${help||''}</div>
+        <div class="opts">${opts}</div>
+        <div class="drow">
+          <select class="dsup" onchange="setSup('${code}',this.value)"><option value="">责任方…</option>${supOpts}</select>
+          <button class="dphotobtn" onclick="addPhotoFor('${code}')">📷 拍照</button>
+        </div>
+        <div class="dmore">
+          <div class="dnoterow">
+            <input class="dnote" id="note_${code}" placeholder="备注（选填，可🎤语音）" value="${(note).replace(/"/g,'&quot;')}" oninput="setNote('${code}',this.value)">
+            <button class="micbtn" id="mic_${code}" onclick="toggleMic('${code}',this)">🎤</button>
+          </div>
+          <div class="dphotos" id="dphotos_${code}"></div>
+        </div>
+      </div>`;
+    });
+  });
+  box.innerHTML=html;
+  // 渲染各项已有照片缩略
+  DCATS.forEach(cat=>cat.items.forEach(d=>renderItemPhotos(d[0])));
+}
+function stdShort(help){ const m=help.match(/标准\s*([≤<][^；;，,]*)/)||help.match(/([≤<]\s*\d+\s*mm)/); return m?('· '+m[1].trim()):''; }
+function toggleHelp(c){ document.getElementById("help_"+c).classList.toggle("show"); }
+function setSup(code,v){ if(!state.cur.jsup)state.cur.jsup={}; state.cur.jsup[code]=v; persist(); }
+function setNote(code,v){ if(!state.cur.jnote)state.cur.jnote={}; state.cur.jnote[code]=v; persist(); }
+function pick(code,val){ if(state.cur.j[code]===val) delete state.cur.j[code]; else state.cur.j[code]=val;
+  persist(); document.querySelectorAll(`#def_${code} .opt`).forEach(el=>el.classList.toggle("on",el.dataset.v===(state.cur.j[code]||""))); refreshStatus(); }
+
+// ============================================================
+// 自定义项（清单外的问题）：名称 + 判定 + 责任方
+// ============================================================
+function renderCustom(){
+  const box=document.getElementById("customBox");
+  box.innerHTML=state.cur.custom.map((c,i)=>{
+    const opts=OPTS.map(o=>`<div class="opt ${c.val===o?'on':''}" data-v="${o}" onclick="pickCustom(${i},'${o}')">${o}</div>`).join("");
+    const supOpts=SUPPLIERS.map(s=>`<option value="${s}"${c.sup===s?' selected':''}>${s}</option>`).join("");
+    return `<div class="custom">
+      <div class="crow"><span class="dcode">C${i+1}</span>
+        <input placeholder="自定义问题名称，如 门套变形" value="${(c.name||'').replace(/"/g,'&quot;')}" oninput="custName(${i},this.value)">
+        <button class="delx" onclick="delCustom(${i})">✕</button></div>
+      <div class="crow" style="margin-top:6px;"><select class="dsup" onchange="custSup(${i},this.value)"><option value="">责任方…</option>${supOpts}</select></div>
+      <div class="opts" style="margin-top:8px;">${opts}</div></div>`;
+  }).join("");
+}
+function addCustom(){ state.cur.custom.push({name:"",val:"",sup:""}); persist(); renderCustom(); }
+function custName(i,v){ state.cur.custom[i].name=v; persist(); }
+function custSup(i,v){ if(state.cur.custom[i]){ state.cur.custom[i].sup=v; persist(); } }
+function pickCustom(i,val){ state.cur.custom[i].val = (state.cur.custom[i].val===val)?"":val; persist(); renderCustom(); refreshStatus(); }
+function delCustom(i){ state.cur.custom.splice(i,1); persist(); renderCustom(); refreshStatus(); }
+
+// ============================================================
+// 语音转文字（webkitSpeechRecognition / SpeechRecognition）
+//   识别结果追加进对应备注框；不支持则隐藏🎤并提示
+// ============================================================
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let _rec=null, _recTarget=null, _recBtn=null;
+function speechSupported(){ return !!SR; }
+function toggleMic(code, btn){
+  if(!speechSupported()){ toast("此浏览器不支持语音输入，请手动输入"); if(btn)btn.style.display='none'; return; }
+  if(_rec && _recTarget===code){ try{_rec.stop();}catch(e){} return; }
+  if(_rec){ try{_rec.stop();}catch(e){} }
+  startMic(code, btn);
+}
+function startMic(code, btn){
+  try{
+    _rec=new SR(); _rec.lang='zh-CN'; _rec.interimResults=false; _rec.continuous=false; _rec.maxAlternatives=1;
+    _recTarget=code; _recBtn=btn; if(btn)btn.classList.add('rec');
+    _rec.onresult=(e)=>{ let txt=''; for(let i=e.resultIndex;i<e.results.length;i++){ txt+=e.results[i][0].transcript; }
+      txt=txt.trim(); if(!txt)return; appendToNote(code, txt); };
+    _rec.onerror=(e)=>{ if(e.error==='not-allowed'||e.error==='service-not-allowed') toast("麦克风被拒，请在浏览器允许麦克风"); else if(e.error!=='no-speech') toast("语音识别出错，请重试或手动输入"); };
+    _rec.onend=()=>{ if(_recBtn)_recBtn.classList.remove('rec'); _rec=null; _recTarget=null; _recBtn=null; };
+    _rec.start(); toast("请说话…（再点🎤可停止）");
+  }catch(e){ toast("无法启动语音，请手动输入"); if(btn)btn.classList.remove('rec'); _rec=null; }
+}
+function appendToNote(code, txt){
+  if(code==='__house__'){
+    const el=document.getElementById('f_note'); el.value=(el.value?el.value+" ":"")+txt; state.cur.note=el.value; persist(); return;
+  }
+  if(!state.cur.jnote)state.cur.jnote={};
+  state.cur.jnote[code]=(state.cur.jnote[code]?state.cur.jnote[code]+" ":"")+txt;
+  const el=document.getElementById('note_'+code); if(el)el.value=state.cur.jnote[code];
+  persist();
+}
+
+// ============================================================
+// 照片：每个检查项独立拍照；复用金茂府水印+圈注+IndexedDB
+// ============================================================
+function renderItemPhotos(code){
+  const box=document.getElementById('dphotos_'+code); if(!box)return;
+  const arr=(state.cur.jphoto&&state.cur.jphoto[code])||[];
+  box.innerHTML=arr.map((p,i)=>`<div class="dpthumb">
+      <img id="thumb_${p.id}" alt="" onclick="openImg('${p.id}')">
+      <span class="px" onclick="event.stopPropagation();delItemPhoto('${code}',${i})">✕</span>
+      <span class="pe" onclick="event.stopPropagation();reAnno('${p.id}')">✏️圈</span>
+    </div>`).join("");
+  arr.forEach(async p=>{ const m=await mGet(p.id); if(m&&m.blob){ const el=document.getElementById('thumb_'+p.id); if(el) el.src=URL.createObjectURL(m.blob);} });
+}
+// 拍照前置校验：楼栋/房号为空先提示（水印要用）
+function addPhotoFor(code){
+  if(!(state.cur.room||'').trim() || !(state.cur.build||'').trim()){
+    toast("请先填楼栋和房号，再拍照（水印要用）");
+    const el=document.getElementById((state.cur.build||'').trim()?'f_room':'f_build');
+    if(el){ try{el.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){} el.focus(); } return;
+  }
+  _photoCode=code;
+  document.getElementById('picker').click();
+}
+let _photoCode=null;
+/* ===== 照片水印（项目/楼栋-单元-房号/时间/检查人，烧进像素）【复用金茂府】 ===== */
+function pad2(n){ return String(n).padStart(2,'0'); }
+function rr2(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function houseLabel(c){
+  const b=(c.build||"").trim(), u=(c.unit||"").trim(), r=(c.room||"").trim();
+  return [b,u,(r?r+"号":"")].filter(Boolean).join("-").replace(/-号/,"号");
+}
+function drawWatermark(ctx,W,H,c){
+  const proj="金陵序";
+  const unit=houseLabel(c);
+  const d=new Date();
+  const ts=d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate())+" "+pad2(d.getHours())+":"+pad2(d.getMinutes());
+  const who=(c.who||"").trim();
+  const FF=" -apple-system,'PingFang SC','Microsoft YaHei',sans-serif";
+  const lines=[
+    {t:proj, fs:Math.max(20,Math.round(W/24)), col:"#E8C892", b:true},
+    {t:(unit||"房号未填·请先填"), fs:Math.max(16,Math.round(W/32)), col:"#ffffff", b:true},
+    {t:ts+(who?("　检查人："+who):""), fs:Math.max(15,Math.round(W/34)), col:"#EAEAEA", b:false},
+  ];
+  ctx.textBaseline="top";
+  let tw=0; lines.forEach(L=>{ ctx.font=(L.b?"bold ":"")+L.fs+"px"+FF; tw=Math.max(tw,ctx.measureText(L.t).width); });
+  let textH=0; lines.forEach(L=> textH+=Math.round(L.fs*1.42));
+  const pad=Math.round(W*0.022), barW=Math.round(W*0.012), gap=Math.round(W*0.012);
+  const boxH=textH+pad*1.2, boxW=Math.min(W-pad*2, tw+barW+gap+pad);
+  const bx=pad, by=H-boxH-pad;
+  ctx.save();
+  ctx.fillStyle="rgba(0,0,0,0.5)"; rr2(ctx,bx,by,boxW,boxH,Math.round(W*0.018)); ctx.fill();
+  ctx.fillStyle="#B98142"; rr2(ctx,bx,by,barW,boxH,Math.round(barW*0.45)); ctx.fill();
+  let ty=by+pad*0.6; const tx=bx+barW+gap;
+  ctx.shadowColor="rgba(0,0,0,0.6)"; ctx.shadowBlur=Math.max(2,Math.round(W/240)); ctx.shadowOffsetY=1;
+  lines.forEach(L=>{ ctx.font=(L.b?"bold ":"")+L.fs+"px"+FF; ctx.fillStyle=L.col; ctx.fillText(L.t,tx,ty); ty+=Math.round(L.fs*1.42); });
+  ctx.restore();
+}
+/* 拍照/选图 → 排队 → 图片进圈注编辑器,视频直接存【复用金茂府】 */
+let _picQ=[], _anOpen=false;
+function onPick(ev){ const files=[...ev.target.files]; ev.target.value=""; files.forEach(f=>_picQ.push(f)); picNext(); }
+function handleVideo(file){ const id=uid(); const code=_photoCode; mPut({id, blob:file, kind:'vid', ext:(file.name.split('.').pop()||'mp4')}).then(()=>{ pushItemPhoto(code,{id, kind:'vid', size:file.size, note:""}); }); }
+function picNext(){
+  if(_anOpen) return;
+  const file=_picQ.shift(); if(!file) return;
+  if(file.type.startsWith('video')){ handleVideo(file); picNext(); return; }
+  const url=URL.createObjectURL(file); const img=new Image();
+  img.onload=()=>{ const max=1280, sc=Math.min(1,max/Math.max(img.width,img.height)), w=Math.round(img.width*sc), h=Math.round(img.height*sc);
+    const base=document.createElement('canvas'); base.width=w; base.height=h; base.getContext('2d').drawImage(img,0,0,w,h); URL.revokeObjectURL(url); openAnno(base); };
+  img.onerror=()=>{ toast("这张图读取失败"); URL.revokeObjectURL(url); picNext(); };
+  img.src=url;
+}
+function pushItemPhoto(code, p){
+  if(!code) code=_photoCode; if(!code) return;
+  if(!state.cur.jphoto)state.cur.jphoto={};
+  if(!state.cur.jphoto[code])state.cur.jphoto[code]=[];
+  state.cur.jphoto[code].push(p); persist(); renderItemPhotos(code); refreshStatus();
+}
+function delItemPhoto(code,i){ const arr=state.cur.jphoto[code]; if(!arr)return; const p=arr[i]; if(p)mDel(p.id); arr.splice(i,1); persist(); renderItemPhotos(code); }
+/* ===== 圈注编辑器:拍照后用手指圈出问题点(红圈),圈完和水印一起烧进照片【复用金茂府】 ===== */
+let _an={base:null,strokes:[],cur:null};
+function openAnno(base, editId){
+  _an={base:base,strokes:[],cur:null,editId:editId||null,code:_photoCode}; _anOpen=true;
+  const cv=document.getElementById('annoCv'); cv.width=base.width; cv.height=base.height;
+  if(!cv._bound){ cv._bound=true; cv.addEventListener('touchstart',annoStart,{passive:false}); cv.addEventListener('touchmove',annoMove,{passive:false}); cv.addEventListener('touchend',annoEnd); }
+  annoRedraw(); document.getElementById('annoBox').style.display='flex';
+}
+function annoPt(e){ const cv=document.getElementById('annoCv'),r=cv.getBoundingClientRect(),t=e.touches[0]||e.changedTouches[0]; return {x:(t.clientX-r.left)/r.width*cv.width, y:(t.clientY-r.top)/r.height*cv.height}; }
+function annoStart(e){ e.preventDefault(); _an.cur=[annoPt(e)]; }
+function annoMove(e){ if(!_an.cur)return; e.preventDefault(); _an.cur.push(annoPt(e)); annoRedraw(); }
+function annoEnd(e){ if(_an.cur&&_an.cur.length>1)_an.strokes.push(_an.cur); _an.cur=null; annoRedraw(); }
+function annoStroke(x,s,lw){ if(!s.length)return; x.lineJoin='round'; x.lineCap='round';
+  x.strokeStyle='rgba(0,0,0,.5)'; x.lineWidth=lw+Math.max(2,lw*0.6); x.beginPath(); x.moveTo(s[0].x,s[0].y); for(const p of s)x.lineTo(p.x,p.y); x.stroke();
+  x.strokeStyle='#FF2D2D'; x.lineWidth=lw; x.beginPath(); x.moveTo(s[0].x,s[0].y); for(const p of s)x.lineTo(p.x,p.y); x.stroke(); }
+function annoRedraw(){ const cv=document.getElementById('annoCv'),x=cv.getContext('2d'); x.drawImage(_an.base,0,0); const lw=Math.max(5,Math.round(cv.width/100)); const all=_an.cur?_an.strokes.concat([_an.cur]):_an.strokes; for(const s of all)annoStroke(x,s,lw); }
+function annoUndo(){ _an.strokes.pop(); annoRedraw(); }
+function annoClear(){ _an.strokes=[]; _an.cur=null; annoRedraw(); }
+function annoClose(){ document.getElementById('annoBox').style.display='none'; _an={base:null,strokes:[],cur:null}; _anOpen=false; picNext(); }
+function annoCancel(){ annoClose(); }
+function reAnno(id){ if(_anOpen){toast("请先完成当前圈注");return;}
+  mGet(id).then(m=>{ if(!m||!m.blob){toast("照片读取失败");return;} const url=URL.createObjectURL(m.blob),img=new Image();
+    img.onload=()=>{ const base=document.createElement('canvas'); base.width=img.width; base.height=img.height; base.getContext('2d').drawImage(img,0,0); URL.revokeObjectURL(url); openAnno(base,id); };
+    img.onerror=()=>{ toast("照片读取失败"); URL.revokeObjectURL(url); }; img.src=url; }); }
+function annoDone(){
+  const cv=document.getElementById('annoCv'); annoRedraw();
+  if(!_an.editId) drawWatermark(cv.getContext('2d'),cv.width,cv.height,state.cur);  // 新照片打水印;补圈的已有水印不重复
+  const eid=_an.editId, code=_an.code;
+  cv.toBlob(blob=>{
+    if(eid){ mPut({id:eid, blob, kind:'img', ext:'jpg'}).then(()=>{ // 补圈：更新对应项里照片 size
+        if(state.cur.jphoto){ for(const k in state.cur.jphoto){ const p=state.cur.jphoto[k].find(x=>x.id===eid); if(p){p.size=blob.size; renderItemPhotos(k);} } }
+        persist(); }); }
+    else { const id=uid(); mPut({id, blob, kind:'img', ext:'jpg'}).then(()=>{ pushItemPhoto(code,{id, kind:'img', size:blob.size, note:""}); }); }
+    annoClose();
+  }, 'image/jpeg', 0.7);
+}
+
+// ============================================================
+// 等级计算（最高判定决定户等级；含自定义项）
+// ============================================================
+function calc(cur){
+  const vals=[...Object.values(cur.j||{}), ...((cur.custom||[]).filter(c=>(c.name||'').trim()).map(c=>c.val))];
+  let max=-1,cnt=0;
+  vals.forEach(v=>{ const L=LV[v]; if(L===undefined)return; if(L>=1)cnt++; if(L>max)max=L; });
+  let lv,cls;
+  if(max===3){lv="③不可交付";cls="lv3";} else if(max===2){lv="②严重";cls="lv2";}
+  else if(max===1){lv="①轻微";cls="lv1";} else if(max===0){lv="〇合格";cls="lv0";} else {lv="待查";cls="lvw";}
+  return {lv,cls,cnt,swap:max===3?"需换件":""};
+}
+function refreshStatus(){
+  const r=calc(state.cur);
+  document.getElementById("curHouse").textContent = (state.cur.room||'').trim()?("当前："+houseLabel(state.cur)):"当前：未填房号";
+  const b=document.getElementById("curLv"); b.textContent=r.lv; b.className="badge "+r.cls;
+  document.getElementById("curCnt").textContent="缺陷 "+r.cnt+" 项"+(r.swap?" · 需换件":"");
+}
+
+// ============================================================
+// 户信息绑定
+// ============================================================
+const fmap={f_build:"build",f_unit2:"unit",f_room:"room",f_type:"type",f_who:"who",f_date:"date",f_note:"note"};
+function bindFields(){
+  for(const id in fmap){ const el=document.getElementById(id); if(!el)continue;
+    el.addEventListener("input",()=>{ state.cur[fmap[id]]=el.value; persist(); if(id==="f_build"||id==="f_unit2"||id==="f_room")refreshStatus(); }); }
+}
+function fillForm(){
+  document.getElementById("f_build").value=state.cur.build||"";
+  document.getElementById("f_unit2").value=state.cur.unit||"";
+  document.getElementById("f_room").value=state.cur.room||"";
+  document.getElementById("f_type").value=state.cur.type||"";
+  document.getElementById("f_who").value=state.cur.who||"";
+  document.getElementById("f_date").value=state.cur.date||todayStr(); state.cur.date=document.getElementById("f_date").value;
+  document.getElementById("f_note").value=state.cur.note||"";
+}
+function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+
+// ============================================================
+// 保存/新建/编辑/删除（保存查重复用金茂府 dupModal）
+// ============================================================
+function saveHouse(){
+  state.cur.build=document.getElementById("f_build").value.trim();
+  state.cur.unit=document.getElementById("f_unit2").value.trim();
+  state.cur.room=document.getElementById("f_room").value.trim();
+  if(!state.cur.room){ toast("请先填房号"); return; }
+  if(!state.cur.build){ toast("请先填楼栋"); return; }
+  // 🔴 保存查重：同 楼栋+单元+房号 已存在(排除正在编辑的自己)→拦截。强制保存时跳过。
+  if(!state._force){
+    const _b=state.cur.build, _u=(state.cur.unit||'').trim(), _r=state.cur.room;
+    const _di=state.records.findIndex((x,i)=> i!==state.editIdx && (x.build||'').trim()===_b && (x.unit||'').trim()===_u && (x.room||'').trim()===_r);
+    if(_di>=0){
+      const _ex=state.records[_di];
+      document.getElementById('dupTitle').innerHTML=`⚠️ 这户 <b>${houseLabel(state.cur)}</b> 已经录过了（缺陷 ${_ex._cnt||0} 项）。<br>是不是房号填错了？`;
+      document.getElementById('dupModal').dataset.idx=_di;
+      document.getElementById('dupModal').classList.add('show');
+      return;
+    }
+  }
+  state._force=false;
+  const r=calc(state.cur); const rec=JSON.parse(JSON.stringify(state.cur));
+  rec._lv=r.lv; rec._cls=r.cls; rec._cnt=r.cnt; rec._swap=r.swap; rec.exported=false;
+  if(state.editIdx!==null && state.editIdx>=0){ state.records[state.editIdx]=rec; state.editIdx=null; }
+  else state.records.push(rec);
+  const keep={build:state.cur.build,unit:state.cur.unit,who:state.cur.who,date:state.cur.date};
+  state.cur=emptyCur(); Object.assign(state.cur,keep);
+  persist(); fillForm(); renderDefects(); renderCustom(); refreshStatus(); renderRecs();
+  window.scrollTo({top:0,behavior:"smooth"}); toast("已保存第 "+state.records.length+" 户");
+}
+function newHouse(){
+  const c=state.cur, has=(c.room||'').trim() && (Object.keys(c.j||{}).length||hasAnyPhoto(c)||(c.custom||[]).some(x=>(x.name||'').trim()));
+  if(has && state.editIdx===null){
+    document.getElementById('nextModalTitle').textContent = `当前【${houseLabel(c)}】还没保存，怎么处理？`;
+    document.getElementById('nextModal').classList.add('show');
+    return;
+  }
+  doNewHouse();
+}
+function hasAnyPhoto(c){ if(!c.jphoto)return false; for(const k in c.jphoto){ if((c.jphoto[k]||[]).length)return true; } return false; }
+function nextChoice(choice){
+  document.getElementById('nextModal').classList.remove('show');
+  if(choice==='cancel') return;
+  if(choice==='save'){ saveHouse(); return; }   // saveHouse 内含进入下一户
+  doNewHouse();                                   // discard
+}
+function dupChoice(choice){
+  const m=document.getElementById('dupModal'); const di=+m.dataset.idx;
+  m.classList.remove('show');
+  if(choice==='rename'){ const el=document.getElementById('f_room'); el.focus(); if(el.select)el.select(); toast('请改正房号再保存'); }
+  else if(choice==='edit'){ state.editIdx=null; editRec(di); }
+  else if(choice==='force'){ state._force=true; saveHouse(); }
+}
+function doNewHouse(){
+  const keep={build:state.cur.build,unit:state.cur.unit,who:state.cur.who,date:state.cur.date};
+  state.cur=emptyCur(); Object.assign(state.cur,keep); state.editIdx=null;
+  persist(); fillForm(); renderDefects(); renderCustom(); refreshStatus(); window.scrollTo({top:0,behavior:"smooth"}); }
+function prevHouse(){
+  if(!state.records.length){ toast("还没有已保存的户"); return; }
+  editRec(state.records.length-1);  // 调出最近保存的那一户来改
+}
+function editRec(i){
+  const c=state.cur, has=(c.room||'').trim() && (Object.keys(c.j||{}).length||hasAnyPhoto(c)||(c.custom||[]).some(x=>(x.name||'').trim()));
+  if(has && state.editIdx===null && !confirm('当前正在填的这户还没保存，先去改别的户会丢掉它。\n确定离开吗？（建议先点"保存本户"）')) return;
+  state.cur=JSON.parse(JSON.stringify(state.records[i]));
+  if(!state.cur.custom)state.cur.custom=[]; if(!state.cur.jsup)state.cur.jsup={}; if(!state.cur.jnote)state.cur.jnote={}; if(!state.cur.jphoto)state.cur.jphoto={};
+  state.editIdx=i;
+  persist(); fillForm(); renderDefects(); renderCustom(); refreshStatus(); window.scrollTo({top:0,behavior:"smooth"}); toast("编辑第 "+(i+1)+" 户，改完点保存"); }
+function delRec(i){ if(!confirm("删除 "+(houseLabel(state.records[i])||"该户")+" ？")) return;
+  const c=state.records[i]; if(c.jphoto){ for(const k in c.jphoto){ (c.jphoto[k]||[]).forEach(p=>mDel(p.id)); } }
+  state.records.splice(i,1); persist(); renderRecs(); }
+
+// ============================================================
+// 已录户清单 + 消项率统计面板
+// ============================================================
+function recPhotoCount(r){ let n=0; if(r.jphoto){ for(const k in r.jphoto) n+=(r.jphoto[k]||[]).length; } return n; }
+function renderRecs(){
+  const box=document.getElementById("recList");
+  const q=(document.getElementById('searchRec')?.value||'').trim();
+  const shown=state.records.map((r,i)=>({r,i})).filter(({r})=> !q || (r.room||'').includes(q) || (r.build||'').includes(q) || (r.unit||'').includes(q));
+  if(state.records.length===0){ box.innerHTML='<div class="tip" style="margin:6px 0;">暂无记录，填完一户点"保存本户"。</div>'; }
+  else if(shown.length===0){ box.innerHTML=`<div class="tip" style="margin:6px 0;">没找到含"${q}"的户。</div>`; }
+  else box.innerHTML = shown.map(({r,i})=>{ const pc=recPhotoCount(r);
+    return `<div class="rec"><span class="h">${houseLabel(r)}<span class="mini">　缺陷${r._cnt}项${pc?'　📷'+pc:''}</span></span>
+      <span class="badge ${r._cls}" style="font-size:11px;padding:3px 8px;">${r._lv}</span>
+      <button class="edit" onclick="editRec(${i})">✏️改</button><button class="del" onclick="delRec(${i})">🗑删</button></div>`; }).join("");
+  renderStatPanel();
+}
+// 消项率统计：已验户数 / ①②③各档缺陷数 / 按责任方分布 / 整体合格率
+function renderStatPanel(){
+  const recs=state.records;
+  const nH=recs.length;
+  let l1=0,l2=0,l3=0;                 // 各档「缺陷条目」数（按检查项计，非按户）
+  let okItems=0, defItems=0;          // 有判定的项里：合格 vs 缺陷
+  const supCnt={};                    // 责任方 → 缺陷条目数
+  recs.forEach(r=>{
+    // 标准项
+    for(const code in (r.j||{})){
+      const v=r.j[code], L=LV[v]; if(L===undefined)continue;
+      if(L===0){ okItems++; }
+      else { defItems++; if(L===1)l1++; else if(L===2)l2++; else if(L===3)l3++;
+        const sup=(r.jsup&&r.jsup[code]!=null&&r.jsup[code])||ITEMDEFSUP[code]||"未指定"; supCnt[sup]=(supCnt[sup]||0)+1; }
+    }
+    // 自定义项
+    (r.custom||[]).filter(c=>(c.name||'').trim()).forEach(c=>{
+      const L=LV[c.val]; if(L===undefined)return;
+      if(L===0){ okItems++; }
+      else { defItems++; if(L===1)l1++; else if(L===2)l2++; else if(L===3)l3++;
+        const sup=c.sup||"未指定"; supCnt[sup]=(supCnt[sup]||0)+1; }
+    });
+  });
+  const judged=okItems+defItems;
+  const rate=judged? Math.round(okItems/judged*1000)/10 : 0;        // 整体合格率（合格项 / 已判定项）
+  const okHouses=recs.filter(r=>r._cls==='lv0').length;
+  const panel=document.getElementById('statPanel');
+  let rateCol = rate>=90?'#5A7A3A':(rate>=70?'#BF8F00':'#C0392B');
+  // 责任方分布条（按缺陷数降序，最多 8 条）
+  const sups=Object.entries(supCnt).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxSup=sups.length?sups[0][1]:1;
+  let supHtml='';
+  if(sups.length){
+    supHtml=`<div class="supdist"><div class="sdh">问题按责任方分布（谁背多少缺陷）</div>`
+      + sups.map(([nm,v])=>`<div class="supbar"><span class="snm">${nm}</span><span class="strack"><span class="sfill" style="width:${Math.max(6,Math.round(v/maxSup*100))}%"></span></span><span class="sval">${v}</span></div>`).join('')
+      + `</div>`;
+  }
+  panel.innerHTML=`
+    <div class="sttitle">📊 消项率统计 <span class="strate" style="background:${rateCol}">合格率 ${rate}%</span></div>
+    <div class="statgrid">
+      <span>已验 <b>${nH}</b> 户</span>
+      <span>全合格 <b style="color:#5A7A3A">${okHouses}</b> 户</span>
+      <span>缺陷项 <b>${defItems}</b></span>
+      <span style="color:#2E5C9A">①轻微 <b>${l1}</b></span>
+      <span style="color:#BF8F00">②严重 <b>${l2}</b></span>
+      <span style="color:#C0392B">③不可交付 <b>${l3}</b></span>
+    </div>
+    ${supHtml}
+    <div class="tip" style="margin-top:8px;color:#9a8d78;">＊合格率＝合格项 ÷ 已判定项（含自定义项）。供应商整改后把该项改判为「合格」即完成消项，此处比例随之上升——用于安装队进度款按整改消项率核付。</div>`;
+  // 导出按钮文案随待导数更新
+  const pend=recs.filter(r=>!r.exported).length;
+  const bn=document.getElementById("btnNew"); if(bn) bn.textContent = pend>0?`导出新增 ${pend} 户（表格＋照片）`:`导出新增（暂无新增）`;
+}
+
+// ============================================================
+// 导出（CSV：每户每个有判定的检查项一行 + 照片 ZIP）
+// ============================================================
+function rowsForExport(recs){
+  recs=recs||state.records;
+  const head=["楼栋","单元","房号","户型","检查人","检查日期","检查项编号","检查项名称","判定","责任方","备注","照片数"];
+  const rows=[];
+  recs.forEach(r=>{
+    // 标准项（仅"有判定"的项）
+    for(const code in (r.j||{})){
+      const val=r.j[code]; if(!val)continue;
+      const sup=(r.jsup&&r.jsup[code]!=null&&r.jsup[code])||ITEMDEFSUP[code]||"";
+      const note=(r.jnote&&r.jnote[code])||"";
+      const np=((r.jphoto&&r.jphoto[code])||[]).length;
+      rows.push([r.build||"",r.unit||"",r.room||"",r.type||"",r.who||"",r.date||"",code,ITEMNAME[code]||"",val,sup,note,np]);
+    }
+    // 自定义项
+    (r.custom||[]).filter(c=>(c.name||'').trim()&&c.val).forEach((c,ci)=>{
+      rows.push([r.build||"",r.unit||"",r.room||"",r.type||"",r.who||"",r.date||"","C"+(ci+1),c.name,c.val,c.sup||"",(c.note||""),0]);
+    });
+    // 若整户一项判定都没有，也留一行占位（便于核对"已验但全合格/未填"）
+    const hasJ=Object.values(r.j||{}).some(v=>v)||(r.custom||[]).some(c=>(c.name||'').trim()&&c.val);
+    if(!hasJ){ rows.push([r.build||"",r.unit||"",r.room||"",r.type||"",r.who||"",r.date||"","-","(本户暂无判定项)","","",r.note||"",0]); }
+  });
+  return {head,rows};
+}
+function san(s){ return String(s||"").replace(/[\\/:*?"<>|]/g,"_").trim()||"_"; }
+function fnameBase(){ const who=(state.records[0]&&state.records[0].who)||"验收"; return `金陵序验收_${who}_${todayStr()}_${state.records.length}户`; }
+
+// 导出前：若当前正在填的这户已填房号但没保存，提示先保存
+function maybeSaveCurrent(){
+  const c=state.cur;
+  const hasJudg = Object.keys(c.j||{}).length>0 || (c.custom||[]).some(x=>(x.name||'').trim()) || hasAnyPhoto(c);
+  if((c.room||'').trim() && hasJudg){
+    if(confirm(`当前正在填的【${houseLabel(c)}】还没点"保存本户"。\n先保存它再导出吗？（点取消=只导出已保存的户）`)){ saveHouse(); }
+  }
+}
+function buildCsvStr(recs){
+  const {head,rows}=rowsForExport(recs);
+  return [head,...rows].map(r=>r.map(c=>{ c=String(c); return /[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c; }).join(",")).join("\r\n");
+}
+// 把给定的若干户打包(表格CSV+照片)下载；返回照片数。照片名=楼栋-单元-房号-检查项编号-序号.jpg
+async function exportBundle(recs, base){
+  const enc=new TextEncoder();
+  const files=[{name:base+".csv", bytes:enc.encode("﻿"+buildCsvStr(recs))}];
+  let nPhoto=0;
+  for(const r of recs){
+    const hl=[san(r.build),san(r.unit),san(r.room)].filter(x=>x&&x!=="_").join("-")||san(r.room);
+    if(r.jphoto){
+      for(const code in r.jphoto){ let seq=0;
+        for(const p of (r.jphoto[code]||[])){ const m=await mGet(p.id); if(!m||!m.blob)continue; seq++; nPhoto++;
+          const ext=p.kind==='vid'?(m.ext||'mp4'):'jpg'; const folder=p.kind==='vid'?'视频':'照片';
+          files.push({name:`${folder}/${hl}-${san(code)}-${seq}.${ext}`, bytes:new Uint8Array(await m.blob.arrayBuffer())});
+        }
+      }
+    }
+  }
+  if(nPhoto===0){ downloadBlob(new Blob(["﻿"+buildCsvStr(recs)],{type:"text/csv;charset=utf-8"}), base+".csv"); }
+  else { downloadBlob(zipStore(files), base+".zip"); }
+  return nPhoto;
+}
+// 只导上次导出之后【新增/改动】的户
+async function exportNew(){
+  maybeSaveCurrent();
+  const pending=state.records.filter(r=>!r.exported);
+  if(!pending.length){ toast("没有新增的户（已保存的都导过了）"); return; }
+  toast("正在打包新增…");
+  state.exportBatch=(state.exportBatch||0)+1;
+  const base=`金陵序验收_${(pending[0].who||'验收')}_${todayStr()}_第${state.exportBatch}批_新增${pending.length}户`;
+  try{ await exportBundle(pending, base); pending.forEach(r=>r.exported=true); persist(); renderRecs(); toast(`已导出新增 ${pending.length} 户`); }
+  catch(e){ state.exportBatch--; toast("打包失败，请重试"); }
+}
+// 导出全部(备份/最后用)
+async function exportAll(){
+  maybeSaveCurrent();
+  if(!state.records.length){ toast("还没有保存任何户。先填一户→点【保存本户】，再来导出。"); return; }
+  toast("正在打包全部…");
+  try{ await exportBundle(state.records, fnameBase()+"_全部"); state.records.forEach(r=>r.exported=true); persist(); renderRecs(); toast("已导出全部 "+state.records.length+" 户"); }
+  catch(e){ toast("打包失败，请重试"); }
+}
+function clearAll(){ if(!confirm("确定清空全部 "+state.records.length+" 户记录和照片？建议先导出。")) return; mClear(); state=blank(); persist(); fillForm(); renderDefects(); renderCustom(); refreshStatus(); renderRecs(); }
+// 🧹 清理已导出照片：只删【已导出】的户的照片，释放手机空间；保留文字记录【复用金茂府】
+async function clearExported(){
+  maybeSaveCurrent();
+  const done=state.records.filter(r=>r.exported && recPhotoCount(r));
+  const nH=done.length, nP=done.reduce((s,r)=>s+recPhotoCount(r),0);
+  if(nP===0){ toast("没有可清理的已导出照片（只清理已导出过的户）"); return; }
+  if(!confirm(`⚠️ 即将清理 ${nH} 户 ${nP} 张【已导出】照片，释放手机空间。\n\n请先确认：这些户的 zip 已经发给段总、并收到了！\n\n清理后录入器里的照片删除【不可恢复】（但你导出的 zip 里、汇总总表上都有，不影响汇总）。确定清理？`)) return;
+  let del=0;
+  for(const r of done){ if(r.jphoto){ for(const k in r.jphoto){ for(const p of (r.jphoto[k]||[])){ try{await mDel(p.id)}catch(e){} del++; } } } r.jphoto={}; r._cleared=true; }
+  persist(); renderRecs(); refreshStatus();
+  toast(`已清理 ${del} 张照片，手机空间已释放`);
+}
+
+// ============================================================
+// 【金茂府工程层·原样复用】ZIP (STORE, 无压缩)
+// ============================================================
+function crc32(b){ let c=~0; for(let i=0;i<b.length;i++){ c^=b[i]; for(let k=0;k<8;k++) c=(c>>>1)^(0xEDB88320 & -(c&1)); } return ~c>>>0; }
+function zipStore(files){
+  const enc=new TextEncoder(); const parts=[]; const central=[]; let offset=0;
+  const u16=n=>[n&255,(n>>8)&255]; const u32=n=>[n&255,(n>>8)&255,(n>>16)&255,(n>>24)&255];
+  for(const f of files){
+    const nameB=enc.encode(f.name); const crc=crc32(f.bytes); const sz=f.bytes.length;
+    const lh=new Uint8Array([].concat(u32(0x04034b50),u16(20),u16(0x0800),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nameB.length),u16(0)));
+    parts.push(lh,nameB,f.bytes);
+    central.push(new Uint8Array([].concat(u32(0x02014b50),u16(20),u16(20),u16(0x0800),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nameB.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset))), nameB);
+    offset += lh.length + nameB.length + f.bytes.length;
+  }
+  let cs=0; central.forEach(c=>cs+=c.length);
+  const eocd=new Uint8Array([].concat(u32(0x06054b50),u16(0),u16(0),u16(files.length),u16(files.length),u32(cs),u32(offset),u16(0)));
+  return new Blob([...parts,...central,eocd],{type:"application/zip"});
+}
+function downloadBlob(blob,name){ const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},800); }
+
+function toast(t){ const el=document.getElementById("toast"); el.textContent=t; el.style.display="block"; clearTimeout(el._t); el._t=setTimeout(()=>el.style.display="none",1500); }
+// 强制拉取最新版（换 query 绕过 iOS 缓存；你录入的数据按域名存,不会丢）
+function forceUpdate(){ toast("正在拉取最新版…"); location.href = location.pathname + "?u=" + Date.now(); }
+
+// ============================================================
+// 【金茂府工程层·原样复用】大图查看：点缩略图全屏，双指/双击放大+拖动
+// ============================================================
+let _lb={scale:1,tx:0,ty:0,sx:0,sy:0,sd:0,ss:1,mode:0,lastTap:0}, _lbInit=false;
+function lbBind(){ if(_lbInit)return; _lbInit=true; const img=document.getElementById('lbimg');
+  img.addEventListener('touchstart',lbStart,{passive:false});
+  img.addEventListener('touchmove',lbMove,{passive:false});
+  img.addEventListener('touchend',function(){_lb.mode=0;}); }
+function lbApply(){ document.getElementById('lbimg').style.transform='translate('+_lb.tx+'px,'+_lb.ty+'px) scale('+_lb.scale+')'; }
+function lbDist(t){ return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
+function lbStart(e){ const t=e.touches;
+  if(t.length===2){ _lb.mode=2; _lb.sd=lbDist(t); _lb.ss=_lb.scale; e.preventDefault(); }
+  else if(t.length===1){ const now=Date.now();
+    if(now-_lb.lastTap<300){ _lb.scale=_lb.scale>1?1:2.5; if(_lb.scale<=1){_lb.tx=0;_lb.ty=0;} lbApply(); _lb.mode=0; _lb.lastTap=0; e.preventDefault(); return; }
+    _lb.lastTap=now; _lb.mode=1; _lb.sx=t[0].clientX-_lb.tx; _lb.sy=t[0].clientY-_lb.ty; } }
+function lbMove(e){ const t=e.touches;
+  if(_lb.mode===2 && t.length===2){ e.preventDefault(); _lb.scale=Math.min(5,Math.max(1,_lb.ss*lbDist(t)/_lb.sd)); if(_lb.scale<=1){_lb.tx=0;_lb.ty=0;} lbApply(); }
+  else if(_lb.mode===1 && t.length===1 && _lb.scale>1){ e.preventDefault(); _lb.tx=t[0].clientX-_lb.sx; _lb.ty=t[0].clientY-_lb.sy; lbApply(); } }
+async function openImg(id){ const m=await mGet(id); if(!m||!m.blob){toast("照片读取失败");return;} lbBind();
+  const ov=document.getElementById('lbox'), img=document.getElementById('lbimg');
+  if(img._u)URL.revokeObjectURL(img._u); img._u=URL.createObjectURL(m.blob); img.src=img._u;
+  _lb={scale:1,tx:0,ty:0,sx:0,sy:0,sd:0,ss:1,mode:0,lastTap:0}; lbApply(); ov.style.display='flex'; }
+function closeImg(){ const ov=document.getElementById('lbox'), img=document.getElementById('lbimg'); ov.style.display='none'; if(img._u){URL.revokeObjectURL(img._u);img._u=null;} img.src=''; }
+
+// ============================================================
+// 启动
+// ============================================================
+function hideMicIfUnsupported(){ if(!speechSupported()){ document.querySelectorAll('.micbtn').forEach(b=>{ b.style.display='none'; }); } }
+bindFields(); fillForm(); renderDefects(); renderCustom(); refreshStatus(); renderRecs(); hideMicIfUnsupported();
+</script>
+
+<div id="lbox" class="lbox" onclick="if(event.target.id==='lbox')closeImg()">
+  <button class="lbx" onclick="closeImg()" aria-label="关闭">✕</button>
+  <img id="lbimg" alt="">
+  <div class="lbhint">双指放大 · 双击放大/还原 · 拖动看细节 · 空白处或 ✕ 关闭</div>
+</div>
+<div id="annoBox" class="annoBox">
+  <div class="annoHint">✏️ 用手指圈出有问题的位置（红圈），圈好点「完成」；不用圈也可直接「完成」</div>
+  <canvas id="annoCv"></canvas>
+  <div class="annoBar">
+    <button onclick="annoCancel()">↩重拍</button>
+    <button onclick="annoUndo()">撤销</button>
+    <button onclick="annoClear()">清除</button>
+    <button class="done" onclick="annoDone()">✓ 完成</button>
+  </div>
+</div>
+</body>
+</html>
