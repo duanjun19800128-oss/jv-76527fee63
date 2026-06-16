@@ -773,20 +773,32 @@ function buildCsvStr(recs){
 async function exportBundle(recs, base){
   const enc=new TextEncoder();
   const files=[{name:base+".csv", bytes:enc.encode("﻿"+buildCsvStr(recs))}];
-  let nPhoto=0;
+  let nPhoto=0; const manifest=[];
   for(const r of recs){
     const hl=[san(r.build),san(r.unit),san(r.room)].filter(x=>x&&x!=="_").join("-")||san(r.room);
+    const codePhotos={};
     if(r.jphoto){
       for(const code in r.jphoto){ let seq=0;
         for(const p of (r.jphoto[code]||[])){ const m=await mGet(p.id); if(!m||!m.blob)continue; seq++; nPhoto++;
           const ext=p.kind==='vid'?(m.ext||'mp4'):'jpg'; const folder=p.kind==='vid'?'视频':'照片';
-          files.push({name:`${folder}/${hl}-${san(code)}-${seq}.${ext}`, bytes:new Uint8Array(await m.blob.arrayBuffer())});
+          const nm=`${folder}/${hl}-${san(code)}-${seq}.${ext}`;
+          files.push({name:nm, bytes:new Uint8Array(await m.blob.arrayBuffer())});
+          (codePhotos[code]=codePhotos[code]||[]).push(nm);
         }
       }
     }
+    // 结构化关联：每户每个有判定的检查项→它自己的照片(源头绑定,上线同步飞书100%精确对应,根治金茂府照片对不上)
+    const hrec={楼栋:r.build||"",单元:r.unit||"",房号:r.room||"",户型:r.type||"",检查人:r.who||"",检查日期:r.date||"",检查项:[]};
+    for(const code in (r.j||{})){ const val=r.j[code]; if(!val)continue;
+      hrec.检查项.push({检查项编号:code,检查项名称:ITEMNAME[code]||"",判定:val,
+        责任方:(r.jsup&&r.jsup[code]!=null&&r.jsup[code])||ITEMDEFSUP[code]||"",
+        备注:(r.jnote&&r.jnote[code])||"",照片:codePhotos[code]||[]}); }
+    (r.custom||[]).filter(c=>(c.name||'').trim()&&c.val).forEach((c,ci)=>{
+      hrec.检查项.push({检查项编号:"C"+(ci+1),检查项名称:c.name,判定:c.val,责任方:c.sup||"",备注:c.note||"",照片:[]}); });
+    manifest.push(hrec);
   }
-  if(nPhoto===0){ downloadBlob(new Blob(["﻿"+buildCsvStr(recs)],{type:"text/csv;charset=utf-8"}), base+".csv"); }
-  else { downloadBlob(zipStore(files), base+".zip"); }
+  files.push({name:base+"_关联.json", bytes:new TextEncoder().encode(JSON.stringify({项目:"金陵序",户数:recs.length,导出:"含照片↔检查项精确关联",records:manifest},null,1))});
+  downloadBlob(zipStore(files), base+".zip");  // 总是打包(CSV+关联.json+照片),保证manifest不丢
   return nPhoto;
 }
 // 只导上次导出之后【新增/改动】的户
