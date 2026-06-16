@@ -594,6 +594,15 @@ function saveHouse(){
   state.cur.room=document.getElementById("f_room").value.trim();
   if(!state.cur.room){ toast("请先填房号"); return; }
   if(!state.cur.build){ toast("请先填楼栋"); return; }
+  // 🔴 判缺陷必拍照：②严重/③不可交付的项必须有照片(从源头杜绝金茂府"有缺陷无照片"·上线同步飞书100%精确对应)
+  {
+    const noPh=[];
+    for(const code in (state.cur.j||{})){
+      const v=state.cur.j[code];
+      if((v==="严重"||v==="不可交付") && !(((state.cur.jphoto||{})[code])||[]).length) noPh.push(code+(ITEMNAME[code]?" "+ITEMNAME[code]:""));
+    }
+    if(noPh.length && !confirm("⚠️ 以下「严重 / 不可交付」缺陷项还没拍照：\n\n"+noPh.join("\n")+"\n\n判定为严重的缺陷必须拍现场照，否则供应商整改没依据、照片也对不上缺陷项。\n\n点【取消】去补拍（推荐）；确实拍不了再点【确定】强制保存。")) return;
+  }
   // 🔴 保存查重：同 楼栋+单元+房号 已存在(排除正在编辑的自己)→拦截。强制保存时跳过。
   if(!state._force){
     const _b=state.cur.build, _u=(state.cur.unit||'').trim(), _r=state.cur.room;
